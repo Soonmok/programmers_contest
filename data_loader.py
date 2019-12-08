@@ -40,7 +40,7 @@ def get_dataset(config, img_paths, labels, dev=False):
 
 
 def get_test_dataset(config, img_paths):
-    dataset = tf.data.Dataset.from_generator(lambda: img_paths, tf.string)
+    dataset = tf.data.Dataset.from_tensor_slices(img_paths)
     dataset = dataset.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
     dataset = dataset.map(process_only_path, num_parallel_calls=tf.data.experimental.AUTOTUNE)
     dataset = dataset.batch(batch_size=config.data.batch_size)
@@ -64,7 +64,6 @@ def get_train_data_loader(config, csv_path):
     return train_dataset, dev_dataset
 
 
-# TODO: need to check if the order is right
 def get_test_data_loader(config, csv_path):
     csv_file = pd.read_csv(csv_path)
     test_img_paths = csv_file['filename'].to_numpy()
@@ -78,3 +77,6 @@ if __name__=="__main__":
     for train_x, y in train_data_loader:
         unique, counts = np.unique(y.numpy(), return_counts=True)
         print(dict(zip(unique, counts)))
+    # test_data_loader = get_test_data_loader(config, "test_vision.csv")
+    # for test_img_path in test_data_loader:
+    #     print(test_img_path)

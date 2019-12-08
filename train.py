@@ -57,7 +57,7 @@ def train():
         y_pred = model(x_test, training=False)
         return y_pred
 
-    default_dev_score = 50
+    default_dev_score = 80
     train_steps = 5500 // config.data.batch_size
     dev_steps = 500 // config.data.batch_size
 
@@ -66,8 +66,8 @@ def train():
         for idx in range(train_steps):
             x_train, y_train = next(train_data_loader)
             train_step(x_train, y_train)
-            template = 'Steps : {}/{}, Loss: {}, Accuracy: {}'
-            print(template.format(idx+1, train_steps, train_loss.result(), train_accuracy.result() * 100))
+            template = 'Epoch {}, Steps : {}/{}, Loss: {}, Accuracy: {}'
+            print(template.format(epoch+1, idx+1, train_steps, train_loss.result(), train_accuracy.result() * 100))
 
         config.training = False
         for idx in range(dev_steps):
@@ -86,6 +86,7 @@ def train():
                 y_pred = test_step(x_test)
                 labels.append(y_pred.numpy())
             labels = np.concatenate(labels, axis=0)
+            labels = np.argmax(labels, axis=1)
             df = pd.read_csv("test_vision.csv")
             df['label'] = labels + 1
             df.to_csv(f"test_result_{epoch + 1}.csv", mode='w')

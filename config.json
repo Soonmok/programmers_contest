@@ -16,7 +16,7 @@
     "resnet": {
       "num_blocks": 10
     },
-    "epochs": 100
+    "epochs": 500
   }
 
 }
