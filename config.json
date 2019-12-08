@@ -1,0 +1,22 @@
+{
+  "model": "senet",
+  "data": {
+    "class_num": 6,
+    "batch_size": 32,
+    "shuffle_batch": 100000,
+    "aug:": true
+  },
+  "trainer": {
+    "senet": {
+      "inception_a_iter": 2,
+      "inception_b_iter": 4,
+      "inception_c_iter": 2,
+      "reduction_ratio": 4
+    },
+    "resnet": {
+      "num_blocks": 10
+    },
+    "epochs": 100
+  }
+
+}
