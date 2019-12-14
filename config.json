@@ -1,5 +1,5 @@
 {
-  "model": "senet",
+  "model": "resnet",
   "data": {
     "class_num": 6,
     "batch_size": 32,
@@ -8,9 +8,9 @@
   },
   "trainer": {
     "senet": {
-      "inception_a_iter": 2,
-      "inception_b_iter": 4,
-      "inception_c_iter": 2,
+      "inception_a_iter": 1,
+      "inception_b_iter": 2,
+      "inception_c_iter": 1,
       "reduction_ratio": 4
     },
     "resnet": {

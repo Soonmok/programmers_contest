@@ -4,6 +4,7 @@ import tensorflow as tf
 
 from config import get_config_from_json
 from data_loader import get_train_data_loader, get_test_data_loader
+from fixresnet import resnet50
 from model import get_se_model, get_resnet_model
 
 
@@ -12,10 +13,13 @@ def train():
     train_data_loader, dev_data_loader = get_train_data_loader(config, "train_vision.csv")
     test_data_loader = get_test_data_loader(config, "test_vision.csv")
     config.training = True
-    if config.model == "resnet":
+    if config.model == "baseline":
         model = get_resnet_model(config)
     elif config.model == "senet":
         model = get_se_model(config)
+    elif config.model == "resnet":
+        model = resnet50()
+        model.build(input_shape=(128, 128, 3))
     else:
         model = None
     print(model.summary())
@@ -89,6 +93,8 @@ def train():
             labels = np.argmax(labels, axis=1)
             df = pd.read_csv("test_vision.csv")
             df['label'] = labels + 1
+            df.drop(df.columns[0], axis=1)
+            del df['filename']
             df.to_csv(f"test_result_{epoch + 1}.csv", mode='w')
 
         train_loss.reset_states()
