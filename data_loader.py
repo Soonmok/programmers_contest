@@ -29,14 +29,14 @@ def get_dataset(config, img_paths, labels, dev=False):
     else:
         dataset = get_resampled_dataset(img_paths, labels)
     dataset = dataset.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
-    # dataset = dataset.shuffle(config.data.shuffle_batch)
-    if config.aug:
+    dataset = dataset.shuffle(config.data.shuffle_batch)
+    dataset = dataset.map(process_path, num_parallel_calls=tf.data.experimental.AUTOTUNE)
+    if not dev and config.data.aug:
         Image_Data_Class = ImageData(config)
-        dataset = dataset.map(Image_Data_Class.process_path, num_parallel_calls=tf.data.experimental.AUTOTUNE)
-    else:
-        dataset = dataset.map(process_path, num_parallel_calls=tf.data.experimental.AUTOTUNE)
+        dataset = dataset.map(Image_Data_Class.augmentation, num_parallel_calls=tf.data.experimental.AUTOTUNE)
     dataset = dataset.batch(batch_size=config.data.batch_size)
     return dataset
+
 
 
 def get_test_dataset(config, img_paths):

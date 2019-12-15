@@ -1,22 +1,28 @@
 {
-  "model": "resnet",
+  "model": "senet",
   "data": {
     "class_num": 6,
     "batch_size": 32,
     "shuffle_batch": 100000,
-    "aug:": true
+    "aug": true,
+    "resize_size": 196
   },
   "trainer": {
     "senet": {
       "inception_a_iter": 1,
-      "inception_b_iter": 2,
+      "inception_b_iter": 1,
       "inception_c_iter": 1,
-      "reduction_ratio": 4
+      "reduction_ratio": 4,
+      "drop_out": 0.4
     },
     "resnet": {
       "num_blocks": 10
     },
-    "epochs": 500
+    "sphere": {
+      "type": 64
+    },
+    "epochs": 500,
+    "drop_out": 0.5
   }
 
 }

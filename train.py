@@ -5,7 +5,7 @@ import tensorflow as tf
 from config import get_config_from_json
 from data_loader import get_train_data_loader, get_test_data_loader
 from fixresnet import resnet50
-from model import get_se_model, get_resnet_model
+from model import get_se_model, get_resnet_model, get_sphere_model
 
 
 def train():
@@ -20,6 +20,8 @@ def train():
     elif config.model == "resnet":
         model = resnet50()
         model.build(input_shape=(128, 128, 3))
+    elif config.model == "sphere":
+        model = get_sphere_model(config)
     else:
         model = None
     print(model.summary())
@@ -61,7 +63,7 @@ def train():
         y_pred = model(x_test, training=False)
         return y_pred
 
-    default_dev_score = 80
+    default_dev_score = 88
     train_steps = 5500 // config.data.batch_size
     dev_steps = 500 // config.data.batch_size
 
@@ -71,7 +73,7 @@ def train():
             x_train, y_train = next(train_data_loader)
             train_step(x_train, y_train)
             template = 'Epoch {}, Steps : {}/{}, Loss: {}, Accuracy: {}'
-            print(template.format(epoch+1, idx+1, train_steps, train_loss.result(), train_accuracy.result() * 100))
+            # print(template.format(epoch+1, idx+1, train_steps, train_loss.result(), train_accuracy.result() * 100))
 
         config.training = False
         for idx in range(dev_steps):
