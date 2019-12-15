@@ -38,7 +38,6 @@ def get_dataset(config, img_paths, labels, dev=False):
     return dataset
 
 
-
 def get_test_dataset(config, img_paths):
     dataset = tf.data.Dataset.from_tensor_slices(img_paths)
     dataset = dataset.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
