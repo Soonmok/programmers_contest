@@ -25,10 +25,41 @@ def process_only_path(img_path):
     return img
 
 
-def resize_and_crop(img, origin_shape, resize_size, seed):
-    image = tf.image.resize(img, size=(resize_size, resize_size))
-    image = tf.image.random_crop(image, origin_shape, seed=seed)
+def resize_and_crop(img):
+    seed = random.randint(0, 2 ** 31 - 1)
+    image = tf.image.resize(img, size=(196, 196))
+    image = tf.image.random_crop(image, (128, 128, 3), seed=seed)
     return image
+
+
+def flip_left_right(img):
+    seed = random.randint(0, 2 ** 31 - 1)
+    img = tf.image.random_flip_left_right(img, seed=seed)
+    return img
+
+
+def random_rotation(img):
+    img = tf.keras.preprocessing.image.random_rotation(img, rg=30.)
+    return img
+
+
+def random_shear(img):
+    img = tf.keras.preprocessing.image.random_shear(img, intensity=15)
+    return img
+
+
+def random_brihtness(img):
+    img = tf.keras.preprocessing.image.random_brightness(img, brightness_range=(0.8, 1))
+    return img
+
+
+def get_augmentation_list():
+    return [resize_and_crop, flip_left_right, random_rotation, random_shear, random_brihtness]
+
+
+def augmentation(img, label, augment=None):
+    img = tf.cond(tf.random.uniform([], 0, 1) > 0.75, lambda: augment(img), lambda: img)
+    return img, label
 
 
 class ImageData:
@@ -42,25 +73,25 @@ class ImageData:
         return img, label
 
     def augmentation(self, image, label):
-        if random.random() > 0.75:
-            seed = random.randint(0, 2 ** 31 - 1)
-            ori_image_shape = tf.shape(image)
-            augment_list = [
-                functools.partial(tf.image.random_flip_left_right, seed=seed),
-                functools.partial(tf.keras.preprocessing.image.random_rotation, rg=30.),
-                functools.partial(
-                    resize_and_crop, origin_shape=ori_image_shape,
-                    resize_size=self.config.data.resize_size, seed=seed),
-                functools.partial(
-                    tf.keras.preprocessing.image.random_shear, intensity=15
-                ),
-                functools.partial(tf.keras.preprocessing.image.random_brightness, brightness_range=(0.8, 1))
-            ]
+        # if random.random() > 0.75:
+        seed = random.randint(0, 2 ** 31 - 1)
+        ori_image_shape = tf.shape(image)
+        augment_list = [
+            functools.partial(tf.image.random_flip_left_right, seed=seed),
+            functools.partial(tf.keras.preprocessing.image.random_rotation, rg=30.),
+            functools.partial(
+                resize_and_crop, origin_shape=ori_image_shape,
+                resize_size=self.config.data.resize_size, seed=seed),
+            functools.partial(
+                tf.keras.preprocessing.image.random_shear, intensity=15
+            ),
+            functools.partial(tf.keras.preprocessing.image.random_brightness, brightness_range=(0.8, 1))
+        ]
 
-            for augment in augment_list:
-                p = random.random()
-                if p < 0.5:
-                    image = augment(image)
+        for augment in augment_list:
+            p = random.random()
+            # if p < 0.5:
+            image = augment(image)
 
         return image, label
 

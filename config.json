@@ -4,7 +4,7 @@
     "class_num": 6,
     "batch_size": 32,
     "shuffle_batch": 100000,
-    "aug": true,
+    "aug": false,
     "resize_size": 196
   },
   "trainer": {
