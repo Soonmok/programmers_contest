@@ -51,8 +51,9 @@ def get_test_dataset(config, img_paths):
 
 
 def get_train_data_loader(config, csv_path):
-    train_img_paths, dev_img_paths, train_labels, dev_labels = get_paths(csv_path)
-    train_dataset, dev_dataset = get_dataset(config, train_img_paths, train_labels, dev_img_paths, dev_labels)
+    train_img_paths, dev_img_paths, train_labels, dev_labels = get_paths(config, csv_path)
+    train_dataset = get_dataset(config, train_img_paths, train_labels)
+    dev_dataset = get_dataset(config, dev_img_paths, dev_labels, dev=True)
     return train_dataset, dev_dataset
 
 

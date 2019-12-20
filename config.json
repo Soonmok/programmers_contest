@@ -4,7 +4,7 @@
     "class_num": 6,
     "batch_size": 32,
     "shuffle_batch": 100000,
-    "aug": false,
+    "aug": true,
     "resize_size": 196
   },
   "trainer": {
@@ -21,7 +21,7 @@
     "sphere": {
       "type": 64
     },
-    "epochs": 500,
+    "epochs": 2000,
     "drop_out": 0.5
   }
 

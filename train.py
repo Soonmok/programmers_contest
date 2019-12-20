@@ -59,18 +59,19 @@ def train():
         y_pred = model(x_test, training=False)
         return y_pred
 
-    default_dev_score = 97
+    default_dev_score = 85
     train_steps = 5500 // config.data.batch_size
     dev_steps = 500 // config.data.batch_size
 
     train_img_paths, dev_img_paths, train_labels, dev_labels = get_paths(config, "train_vision.csv")
-    dev_data_loader = get_data(config, dev_img_paths, dev_labels)
-    dev_data_loader = dev_data_loader.__iter__()
     test_data_loader = get_test_data_loader(config, "test_vision.csv")
 
+    train_data_loader = get_data(config, train_img_paths, train_labels)
+    train_data_loader = train_data_loader.__iter__()
+    dev_data_loader = get_data(config, dev_img_paths, dev_labels)
+    dev_data_loader = dev_data_loader.__iter__()
+
     for epoch in range(config.trainer.epochs):
-        train_data_loader = get_data(config, train_img_paths, train_labels)
-        train_data_loader = train_data_loader.__iter__()
         config.training = True
         for idx in range(train_steps):
             x_train, y_train = next(train_data_loader)
